@@ -1,0 +1,103 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+    <groupId>jp.llv</groupId>
+    <artifactId>github-deploy-base</artifactId>
+    <name>GithubDeployBase</name>
+    <version>1</version>
+    <packaging>pom</packaging>
+    <properties>
+        <github.global.server>github</github.global.server>
+    </properties>
+
+    <distributionManagement>
+        <repository>
+            <id>internal.repos</id>
+            <name>Temporary Staging Repository</name>
+            <url>file://${project.build.directory}/mvn-repo</url>
+        </repository>
+    </distributionManagement>
+
+    <profiles>
+        <profile>
+            <id>deploy</id>
+            <build>
+                <plugins>
+                    <!-- Maven Source -->
+                    <plugin>
+                        <groupId>org.apache.maven.plugins</groupId>
+                        <artifactId>maven-source-plugin</artifactId>
+                        <version>2.2</version>
+                        <executions>
+                            <execution>
+                                <id>attach-sources</id>
+                                <phase>package</phase>
+                                <goals>
+                                    <goal>jar-no-fork</goal>
+                                </goals>
+                            </execution>
+                        </executions>
+                    </plugin>
+                    <!-- JavaDoc -->
+                    <plugin>
+                        <groupId>org.apache.maven.plugins</groupId>
+                        <artifactId>maven-javadoc-plugin</artifactId>
+                        <version>2.10.3</version>
+                        <executions>
+                            <execution>
+                                <id>javadoc-jar</id>
+                                <phase>verify</phase>
+                                <goals>
+                                    <goal>jar</goal>
+                                </goals>
+                            </execution>
+                        </executions>
+                    </plugin>
+                    <!-- Github Pages -->
+                    <plugin>
+                        <groupId>com.github.github</groupId>
+                        <artifactId>site-maven-plugin</artifactId>
+                        <version>0.12</version>
+                        <configuration>
+                            <noJekyll>true</noJekyll>
+                            <branch>refs/heads/gh-pages</branch>
+                            <merge>true</merge>
+                            <includes>
+                                <include>**/*</include>
+                            </includes>
+                        </configuration>
+                        <executions>
+                            <execution>
+                                <id>maven-repo</id>
+                                <phase>deploy</phase>
+                                <goals>
+                                    <goal>site</goal>
+                                </goals>
+                                <configuration>
+                                    <message>Add ${project.artifactId}-${project.version}</message>
+                                    <outputDirectory>${project.build.directory}/mvn-repo</outputDirectory>
+                                    <repositoryName>mvn-repo</repositoryName>
+                                    <repositoryOwner>4oi</repositoryOwner>
+                                </configuration>
+                            </execution>
+                            <execution>
+                                <id>javadoc-repo</id>
+                                <phase>deploy</phase>
+                                <goals>
+                                    <goal>site</goal>
+                                </goals>
+                                <configuration>
+                                    <message>Update for ${project.artifactId}-${project.version}</message>
+                                    <outputDirectory>${project.build.directory}/apidocs</outputDirectory>
+                                    <path>${project.groupId}/${project.artifactId}/${project.version}</path>
+                                    <repositoryName>javadoc</repositoryName>
+                                    <repositoryOwner>4oi</repositoryOwner>
+                                </configuration>
+                            </execution>
+                        </executions>
+                    </plugin>
+                </plugins>
+            </build>
+        </profile>
+    </profiles>
+</project>
