@@ -3,10 +3,11 @@
   <groupId>syam.flaggame</groupId>
   <artifactId>flaggame</artifactId>
   <versioning>
-    <release>2.5.0-beta</release>
+    <release>2.5.10-beta</release>
     <versions>
       <version>2.5.0-beta</version>
+      <version>2.5.10-beta</version>
     </versions>
-    <lastUpdated>20170623170112</lastUpdated>
+    <lastUpdated>20170803145604</lastUpdated>
   </versioning>
 </metadata>
